@@ -65,4 +65,11 @@ Project News Events é um projeto para praticar a integração do Flutter com  o
     ```
     $ flutter run
     ```
+<h2 id="test">Teste</h2>
 
+* Crendeciais do usuário cadastrado para testes
+
+  ```
+  user: userTeste
+  password: 123456
+  ```
