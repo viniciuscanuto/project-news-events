@@ -5,11 +5,6 @@ import 'package:http/http.dart' as http;
 import 'package:mobile/config/api.dart';
 import 'package:mobile/models/authenticationModel.dart';
 
-class _LoginData {
-  String email = '';
-  String password = '';
-}
-
 class LoginView extends StatefulWidget {
   LoginView({Key key}) : super(key: key);
 
@@ -34,11 +29,15 @@ class _LoginViewState extends State<LoginView> {
           'user': emailControllerName.value.text,
           'password': passwordControllerName.value.text
         }));
-
-    accessToken =
-        AuthenticationModel.fromJson(json.decode(response.body)).accessToken;
-
-    Navigator.pop(context, accessToken);
+    if (response.statusCode == 200) {
+      accessToken =
+          AuthenticationModel.fromJson(json.decode(response.body)).accessToken;
+      Navigator.pop(context, accessToken);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Usuário ou senha incorreto!')),
+      );
+    }
   }
 
   @override
@@ -53,7 +52,7 @@ class _LoginViewState extends State<LoginView> {
                   TextFormField(
                       // Use email input type for emails.
                       decoration: InputDecoration(
-                          hintText: 'example@mail.com', labelText: 'E-mail'),
+                          hintText: 'usuario', labelText: 'Usuário'),
                       controller: emailControllerName),
                   TextFormField(
                     obscureText: true, // Use secure text for passwords.
