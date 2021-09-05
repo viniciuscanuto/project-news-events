@@ -1,19 +1,22 @@
 import { Router, Request, Response } from 'express'
 import { eventsExample } from './infra/database/eventsExample'
-import { generateToken } from './infra/authentication/authentication'
+import { verifyToken } from './infra/authentication/authentication'
 import { newsExample } from './infra/database/newsExample'
-import { verify } from 'jsonwebtoken'
+import { verifyAuthentication } from './controller/authenticationController'
 
 const routes = Router()
 
 const Authentication = (req: Request, res: Response, next) => {
-  const token: any = req.headers['x-access-token'];
-    if (!token) return res.status(401).json({ message: 'No token provided.' });
+  try {
+    const token: any = req.headers['x-access-token'];
+    if (!token) return res.status(401).json({ message: 'Token não pode ser nulo' });
     
-    verify(token, '784573hhfyrd', function(err, decoded) {
-      if (err) return res.status(500).json({ message: 'Failed to authenticate token.' });
-      next();
-    });
+    verifyToken(token);
+
+    next();
+  } catch (error) {
+    return res.status(500).json({ message: 'accessToken inválido' })
+  }
 }
 
 routes.get('/news', (req: Request, res: Response) => {
@@ -25,14 +28,16 @@ routes.get('/event', Authentication,(req: Request, res: Response) => {
 })
 
 routes.post('/login', (req: Request, res: Response) => {
-  const { userName } = req.body;
+  try {
+    const { user, password } = req.body;
   
-  if(req.body.user === 'userTeste' && req.body.password === '123456'){
-    const token = generateToken(userName)
-    return res.json({ accessToken: token });
+    const token = verifyAuthentication({user, password});
+
+    res.json({accessToken: token});
+
+  } catch(error) {
+    res.status(500).json(error.message);
   }
-  
-  res.status(500).json({message: 'Login inválido!'});
 });
 
 routes.post('/logout', (req: Request, res: Response) => {
