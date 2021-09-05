@@ -17,8 +17,10 @@ Project News Events é um projeto para praticar a integração do Flutter com  o
 1. ☑ Listar Notícias
 1. ☑ Listar Eventos (com Autenticação)
 1. ☑ Login
+1. ⛔ Login via mídia sociais
 1. ☑ Logout
 1. ☑ Dados mockados e fictícios
+
 
 <h2 id="requirements">Requisitos</h2>
 
